@@ -1,3 +1,91 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Display:ital,wght@0,100..900;1,100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  font-family: "Noto Sans Display";
+}
+
+@layer utilities {
+  .float-1 {
+    animation: moveone 20s ease-in-out infinite;
+  }
+
+  .float-2 {
+    animation: movetwo 25s ease-in-out infinite;
+  }
+
+  .float-3 {
+    animation: movethree 30s ease-in-out infinite;
+  }
+
+  .float-4 {
+    animation: movefour 25s ease-in-out infinite;
+  }
+
+  @keyframes moveone {
+    0%,
+    100% {
+      transform: translateY(0) translateX(0) rotate(-10deg);
+    }
+    25% {
+      transform: translateY(-15%) translateX(10%) rotate(3deg);
+    }
+    50% {
+      transform: translateY(5%) translateX(-20%) rotate(-2deg);
+    }
+    75% {
+      transform: translateY(-10%) translateX(-15%) rotate(3deg);
+    }
+  }
+
+  @keyframes movetwo {
+    0%,
+    100% {
+      transform: translateY(0) translateX(0) rotate(15deg);
+    }
+    25% {
+      transform: translateY(10%) translateX(-10%) rotate(-5deg);
+    }
+    50% {
+      transform: translateY(-10%) translateX(10%) rotate(5deg);
+    }
+    75% {
+      transform: translateY(10%) translateX(10%) rotate(-5deg);
+    }
+  }
+
+  @keyframes movethree {
+    0%,
+    100% {
+      transform: translateY(0) translateX(0) rotate(-1deg);
+    }
+    25% {
+      transform: translateY(-15%) translateX(-15%) rotate(10deg);
+    }
+    50% {
+      transform: translateY(15%) translateX(-15%) rotate(-10deg);
+    }
+    75% {
+      transform: translateY(-15%) translateX(15%) rotate(10deg);
+    }
+  }
+
+  @keyframes movefour {
+    0%,
+    100% {
+      transform: translateY(0) translateX(0) rotate(0deg);
+    }
+    25% {
+      transform: translateY(25%) translateX(-5%) rotate(6deg);
+    }
+    50% {
+      transform: translateY(-12%) translateX(-20%) rotate(-7deg);
+    }
+    75% {
+      transform: translateY(10%) translateX(20%) rotate(12deg);
+    }
+  }
+}

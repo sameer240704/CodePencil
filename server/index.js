@@ -13,13 +13,15 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/", userRoutes);
+// Routes
+app.use("/user", userRoutes);
 
 const connectionParams = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
 
+// Database
 const connectDB = async () => {
   try {
     await mongoose
