@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.png";
 import toast from "react-hot-toast";
+import { useRegister } from "../hooks/useRegister";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -12,9 +13,17 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [username, setUsername] = useState("");
+  const { register, isLoading, error } = useRegister();
 
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
 
     const randomString = Math.random().toString(36).substr(2, 5);
     const generatedUsername = `${name.replace(
@@ -23,7 +32,14 @@ const Register = () => {
     )}_${randomString}`.toLowerCase();
     setUsername(generatedUsername);
 
-    toast(`Username: ${generatedUsername}`);
+    await register(name, generatedUsername, email, password);
+
+    if (error) {
+      toast.error(error);
+    } else if (error) {
+      toast(`Username: ${generatedUsername}`);
+      // navigate("/home");
+    }
   };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -62,7 +78,7 @@ const Register = () => {
                 placeholder="John Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="grow placeholder:text-gray-300"
+                className="grow placeholder:text-gray-500"
                 required
               />
             </label>
@@ -87,7 +103,7 @@ const Register = () => {
                 placeholder="johndoe@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="grow placeholder:text-gray-300"
+                className="grow placeholder:text-gray-500"
                 required
               />
             </label>
@@ -115,7 +131,7 @@ const Register = () => {
                 placeholder="example@123"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="grow placeholder:text-gray-300"
+                className="grow placeholder:text-gray-500"
                 required
               />
             </label>
@@ -151,7 +167,7 @@ const Register = () => {
                 placeholder="example@123"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="grow placeholder:text-gray-300"
+                className="grow placeholder:text-gray-500"
                 required
               />
             </label>
@@ -175,6 +191,7 @@ const Register = () => {
             type="submit"
             onClick={handleSubmit}
             className="btn btn-primary border-0 w-full mt-5 bg-secondary-100 text-white py-3 rounded-lg font-semibold"
+            disabled={isLoading}
           >
             Register
           </button>

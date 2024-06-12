@@ -1,29 +1,36 @@
 import React, { useState } from "react";
 import { RiEyeLine, RiEyeCloseLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.png";
+import { useLogin } from "../hooks/useLogin";
 import toast from "react-hot-toast";
 
 const Login = () => {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [username, setUsername] = useState("");
+  const { login, isLoading, error } = useLogin();
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const randomString = Math.random().toString(36).substr(2, 5);
-    const generatedUsername = `${name.replace(
-      /\s/g,
-      ""
-    )}_${randomString}`.toLowerCase();
-    setUsername(generatedUsername);
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
 
-    toast(`Username: ${generatedUsername}`);
+    await login(email, password);
+
+    console.log(error);
+
+    if (!error && !isLoading) {
+      navigate("/home");
+    } else {
+      toast.error(error);
+    }
   };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -63,7 +70,7 @@ const Login = () => {
                 placeholder="johndoe@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="grow placeholder:text-gray-300"
+                className="grow placeholder:text-gray-500"
                 required
               />
             </label>
@@ -91,7 +98,7 @@ const Login = () => {
                 placeholder="example@123"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="grow placeholder:text-gray-300"
+                className="grow placeholder:text-gray-500"
                 required
               />
             </label>
@@ -127,7 +134,7 @@ const Login = () => {
                 placeholder="example@123"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="grow placeholder:text-gray-300"
+                className="grow placeholder:text-gray-500"
                 required
               />
             </label>

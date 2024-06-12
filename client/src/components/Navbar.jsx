@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useLogout } from "../hooks/useLogout";
 import Logo from "../assets/logo.png";
 
 const Navbar = () => {
+  const [user, setUser] = useState(null);
+  const { logout } = useLogout();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleUserLogout = () => {
+    logout();
+    setUser(null);
+  };
+
   return (
     <div className="h-10 w-screen px-10 flex items-center justify-between absolute z-50 lg:h-20 lg:px-20">
       <Link
@@ -15,16 +31,36 @@ const Navbar = () => {
       </Link>
 
       <div className="flex justify-center items-center gap-4">
-        <Link to="/sign-in">
-          <button className="btn btn-outline text-secondary-200 hover:bg-secondary-200">
-            <h1 className="text-lg lg:text-xl">Login</h1>
-          </button>
-        </Link>
-        <Link to="/sign-up">
-          <button className="btn btn-neutral">
-            <h1 className="text-lg lg:text-xl">Register</h1>
-          </button>
-        </Link>
+        {user ? (
+          <div className="flex justify-center items-center gap-7">
+            <Link to="/profile">
+              <img
+                src={
+                  user.profilePicture ||
+                  "https://static.vecteezy.com/system/resources/thumbnails/008/442/086/small_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
+                }
+                alt="User Profile"
+                className="h-9 w-9 rounded-full"
+              />
+            </Link>
+            <button className="btn btn-error" onClick={handleUserLogout}>
+              <h1 className="uppercase text-sm lg:text-md">Logout</h1>
+            </button>
+          </div>
+        ) : (
+          <>
+            <Link to="/sign-in">
+              <button className="btn btn-outline text-secondary-200 hover:bg-secondary-200">
+                <h1 className="text-lg lg:text-xl">Login</h1>
+              </button>
+            </Link>
+            <Link to="/sign-up">
+              <button className="btn btn-neutral">
+                <h1 className="text-lg lg:text-xl">Register</h1>
+              </button>
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );

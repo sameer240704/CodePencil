@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use("/user", userRoutes);
+app.use("/", userRoutes);
 
 const connectionParams = {
   useNewUrlParser: true,
