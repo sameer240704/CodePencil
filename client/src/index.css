@@ -9,6 +9,11 @@
 }
 
 @layer utilities {
+  .flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .float-1 {
     animation: moveone 20s ease-in-out infinite;
   }

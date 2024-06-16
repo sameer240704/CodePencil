@@ -22,14 +22,12 @@ const Login = () => {
       return;
     }
 
-    await login(email, password);
+    const result = await login(email, password);
 
-    console.log(error);
-
-    if (!error && !isLoading) {
+    if (result.success) {
       navigate("/home");
     } else {
-      toast.error(error);
+      toast.error(result.message);
     }
   };
 
@@ -149,7 +147,7 @@ const Login = () => {
           </div>
 
           <div className="text-md flex gap-2 mt-16">
-            <h1>Already a developer at CodePencil?</h1>
+            <h1>New to CodePencil?</h1>
             <Link to="/sign-up" className="text-blue-500 underline font-bold">
               Sign Up
             </Link>
@@ -158,8 +156,9 @@ const Login = () => {
             type="submit"
             onClick={handleSubmit}
             className="btn btn-primary border-0 w-full mt-5 bg-secondary-100 text-white py-3 rounded-lg font-semibold"
+            disabled={isLoading}
           >
-            Login
+            {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>

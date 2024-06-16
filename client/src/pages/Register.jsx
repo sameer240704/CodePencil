@@ -13,6 +13,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [username, setUsername] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
   const { register, isLoading, error } = useRegister();
 
   const navigate = useNavigate();
@@ -30,27 +31,75 @@ const Register = () => {
       /\s/g,
       ""
     )}_${randomString}`.toLowerCase();
-    setUsername(generatedUsername);
 
-    await register(name, generatedUsername, email, password);
+    const result = await register(
+      name,
+      generatedUsername,
+      email,
+      password,
+      profileImage
+    );
 
-    if (error) {
-      toast.error(error);
-    } else if (error) {
-      toast(`Username: ${generatedUsername}`);
-      // navigate("/home");
+    if (result.success) {
+      toast.success(`Username: ${generatedUsername}`);
+      navigate("/home");
+    } else {
+      toast.error(result.message);
     }
   };
 
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const img = new Image();
+      img.src = reader.result;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        const maxWidth = 800;
+        const maxHeight = 800;
+        let { width, height } = img;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = (width * maxHeight) / height;
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+        const resizedDataUrl = canvas.toDataURL("image/jpeg", 0.7);
+        setProfileImage(resizedDataUrl);
+      };
+    };
+    reader.onerror = (error) => {
+      toast.error("Couldn't convert your profile image");
+    };
+  };
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () =>
     setShowConfirmPassword(!showConfirmPassword);
 
   return (
     <div className="h-screen w-screen bg-background-100 flex justify-center items-center">
-      <div className="bg-background-100 w-4/12 flex items-center  justify-center gap-16 rounded-xl overflow-hidden">
-        <form className="w-full bg-[#121212] px-16 py-16 lg:py-20">
+      <div className="bg-background-100 w-4/12 flex items-center justify-center gap-16 rounded-xl overflow-hidden">
+        <form
+          className="w-full bg-[#121212] px-16 py-16 lg:py-20"
+          onSubmit={handleSubmit}
+        >
           <div className="flex items-center justify-center font-semibold gap-0.5 text-3xl lg:text-4xl">
             <h1 className="text-white">C</h1>
             <img src={Logo} alt="Logo" className="h-9 w-auto" />
@@ -79,7 +128,6 @@ const Register = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="grow placeholder:text-gray-500"
-                required
               />
             </label>
           </div>
@@ -104,7 +152,6 @@ const Register = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="grow placeholder:text-gray-500"
-                required
               />
             </label>
           </div>
@@ -132,7 +179,6 @@ const Register = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="grow placeholder:text-gray-500"
-                required
               />
             </label>
 
@@ -168,7 +214,6 @@ const Register = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="grow placeholder:text-gray-500"
-                required
               />
             </label>
 
@@ -180,7 +225,33 @@ const Register = () => {
               {showConfirmPassword ? <RiEyeCloseLine /> : <RiEyeLine />}
             </button>
           </div>
-
+          <div className="mb-7">
+            <label
+              htmlFor="profileImage"
+              className="input input-bordered flex items-center gap-5 text-md mb-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                className="w-4 h-4 opacity-70"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M13.5 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h11ZM2 2v12h12V2H2Z"
+                  clipRule="evenodd"
+                />
+                <path d="M4 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5ZM4.5 7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7ZM4 9.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5ZM8 12.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5Z" />
+              </svg>
+              <input
+                type="file"
+                id="profileImage"
+                onChange={handleImageChange}
+                className="grow placeholder:text-gray-500"
+                accept="image/*"
+              />
+            </label>
+          </div>
           <div className="text-md flex gap-2 mt-16">
             <h1>Already a developer at CodePencil?</h1>
             <Link to="/sign-in" className="text-blue-500 underline font-bold">
@@ -189,7 +260,6 @@ const Register = () => {
           </div>
           <button
             type="submit"
-            onClick={handleSubmit}
             className="btn btn-primary border-0 w-full mt-5 bg-secondary-100 text-white py-3 rounded-lg font-semibold"
             disabled={isLoading}
           >

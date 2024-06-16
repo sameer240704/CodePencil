@@ -30,15 +30,18 @@ export const useLogin = () => {
         localStorage.setItem("user", JSON.stringify(user));
         dispatch({ type: "LOGIN", payload: user });
         setIsLoading(false);
+        return { success: true };
       } else {
         setIsLoading(false);
         setError("Login failed. Please try again.");
+        return { success: false, message: "Login failed. Please try again." };
       }
     } catch (err) {
       setIsLoading(false);
-      setError(
-        err.response?.data?.message || "An error occurred. Please try again."
-      );
+      const errorMessage =
+        err.response?.data?.message || "An error occurred. Please try again.";
+      setError(errorMessage);
+      return { success: false, message: errorMessage };
     }
   };
 

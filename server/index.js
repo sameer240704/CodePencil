@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/user.route");
+const leaderboardRoutes = require("./routes/leaderboard.route");
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use("/", userRoutes);
+app.use("/leaderboard", leaderboardRoutes);
 
 const connectionParams = {
   useNewUrlParser: true,

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useLogout } from "../hooks/useLogout";
 import Logo from "../assets/logo.png";
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
   const { logout } = useLogout();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -17,10 +19,26 @@ const Navbar = () => {
   const handleUserLogout = () => {
     logout();
     setUser(null);
+    navigate("/");
+  };
+
+  const getProfileImage = () => {
+    if (user && user.profileImage) {
+      if (user.profileImage.startsWith("data:image")) {
+        return user.profileImage;
+      } else {
+        return `data:image/jpeg;base64,${user.profileImage}`;
+      }
+    }
+    return "https://static.vecteezy.com/system/resources/thumbnails/008/442/086/small_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg";
   };
 
   return (
-    <div className="h-10 w-screen px-10 flex items-center justify-between absolute z-50 lg:h-20 lg:px-20">
+    <div
+      className={`${
+        location.pathname !== "/" ? "bg-[#2a2a2a]" : "bg-transparent"
+      } h-20 w-screen px-10 flex items-center justify-between z-50 lg:px-16`}
+    >
       <Link
         to="/"
         className="flex items-center justify-center font-semibold gap-0.5 text-2xl lg:text-3xl"
@@ -35,10 +53,7 @@ const Navbar = () => {
           <div className="flex justify-center items-center gap-7">
             <Link to="/profile">
               <img
-                src={
-                  user.profilePicture ||
-                  "https://static.vecteezy.com/system/resources/thumbnails/008/442/086/small_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
-                }
+                src={getProfileImage()}
                 alt="User Profile"
                 className="h-9 w-9 rounded-full"
               />

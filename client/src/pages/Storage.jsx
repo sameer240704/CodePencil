@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Navbar, Sidebar } from "../components";
 import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+const Storage = () => {
   const navigate = useNavigate();
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -17,11 +17,11 @@ const Home = () => {
       <div className="flex-1 flex">
         <Sidebar />
         <div className="p-6 flex-1 overflow-auto">
-          <h1 className="text-3xl text-white">Home</h1>
+          <h1 className="text-3xl text-white">Storage</h1>
         </div>
       </div>
     </div>
   );
 };
 
-export default Home;
+export default Storage;

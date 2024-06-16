@@ -1,3 +1,5 @@
 import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
+import Loader from "./Loader";
 
-export { Navbar };
+export { Navbar, Sidebar, Loader };

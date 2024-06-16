@@ -9,58 +9,58 @@ const createToken = (_id) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+
   try {
     if (!email || !password) {
-      throw Error("All fields must be filled!");
-      // return res.status(400).send({ message: "All fields must be filled!" });
+      return res.status(400).json({ message: "All fields must be filled!" });
     }
 
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw Error("User doesn't exist!");
-      // return res.status(400).send({ message: "User doesn't exist!" });
+      return res.status(400).json({ message: "User doesn't exist!" });
     }
 
     const isUser = await bcrypt.compare(password, user.password);
 
     if (!isUser) {
-      throw Error("Password is incorrect");
-      // return res.status(400).send({ message: "Password is incorrect" });
+      return res.status(400).json({ message: "Password is incorrect" });
     }
 
-    res.status(200).json(newUser._id);
+    res.status(200).json(user);
   } catch (error) {
-    return res.status(401).json({ message: error });
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
 
 const registerUser = async (req, res) => {
-  const { name, username, email, password } = req.body;
+  const { name, username, email, password, profileImage } = req.body;
 
   try {
-    const existingUser = await User.findOne({ email });
-
     if (!email || !password || !name || !username) {
-      // throw Error("All fields must be filled!");
-      return res.status(400).send({ message: "All fields must be filled!" });
+      return res.status(400).json({ message: "All fields must be filled!" });
+    }
+
+    if (!profileImage) {
+      return res
+        .status(400)
+        .json({ message: "Please enter your profile image" });
     }
 
     if (!validator.isEmail(email)) {
-      // throw Error("Invalid email");
-      return res.status(400).send({ message: "Invalid email" });
+      return res.status(400).json({ message: "Invalid email" });
     }
 
     if (!validator.isStrongPassword(password)) {
-      // throw Error("The password is not strong enough");
       return res
         .status(400)
-        .send({ message: "The password is not strong enough" });
+        .json({ message: "The password is not strong enough" });
     }
 
+    const existingUser = await User.findOne({ email });
+
     if (existingUser) {
-      // throw Error("User already exists!");
-      return res.status(400).send({ message: "User already exists" });
+      return res.status(400).json({ message: "User already exists!" });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -71,15 +71,16 @@ const registerUser = async (req, res) => {
       username,
       email,
       password: hash,
+      profileImage,
     });
 
     const token = createToken(newUser._id);
 
     newUser.save();
 
-    res.status(200).json(newUser._id, token);
+    res.status(200).json(newUser);
   } catch (error) {
-    res.status(401).json({ message: "Couldn't register the user" });
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
 

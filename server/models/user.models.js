@@ -21,6 +21,15 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    profileImage: {
+      type: String,
+      required: true,
+    },
+    points: {
+      type: Number,
+      default: 0,
+      required: false,
+    },
   },
   { timestamps: true }
 );

@@ -7,7 +7,7 @@ export const useRegister = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { dispatch } = useAuthContext();
 
-  const register = async (name, username, email, password) => {
+  const register = async (name, username, email, password, profileImage) => {
     setIsLoading(true);
     setError(null);
 
@@ -19,6 +19,7 @@ export const useRegister = () => {
           username,
           email,
           password,
+          profileImage,
         },
         {
           headers: {
@@ -32,16 +33,20 @@ export const useRegister = () => {
         localStorage.setItem("user", JSON.stringify(user));
         dispatch({ type: "LOGIN", payload: user });
         setIsLoading(false);
-        setError(null);
+        return { success: true };
       } else {
         setIsLoading(false);
-        setError("Registration failed. Please try again.");
+        const errorMessage =
+          response.data.message || "Registration failed. Please try again.";
+        setError(errorMessage);
+        return { success: false, message: errorMessage };
       }
     } catch (err) {
       setIsLoading(false);
-      setError(
-        err.response?.data?.message || "An error occurred. Please try again."
-      );
+      const errorMessage =
+        err.response?.data?.message || "An error occurred. Please try again.";
+      setError(errorMessage);
+      return { success: false, message: errorMessage };
     }
   };
 
