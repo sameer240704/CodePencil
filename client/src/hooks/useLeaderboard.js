@@ -36,5 +36,31 @@ export const useLeaderboard = () => {
     }
   };
 
-  return { fetchLeaderboard, isLoading, error, users, totalPages };
+  // const getLeaderboardUser = async () => {
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:5000/leaderboard/getSearchedUser",
+  //       {
+  //         searchTerm,
+  //       },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     setUsers(response.data.users);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
+
+  return {
+    fetchLeaderboard,
+    // getLeaderboardUser,
+    isLoading,
+    error,
+    users,
+    totalPages,
+  };
 };

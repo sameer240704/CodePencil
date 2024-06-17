@@ -22,4 +22,23 @@ const getUsersLeaderboard = async (req, res) => {
   }
 };
 
-module.exports = { getUsersLeaderboard };
+const getSearchedUser = async (req, res) => {
+  const { username } = req.body;
+
+  try {
+    const users = await User.find({
+      username: { $regex: `^${username}`, $options: "i" },
+    }).select("-password");
+
+    if (!users.length) {
+      return res.status(400).json({ message: "No users found" });
+    }
+
+    return res.status(200).json({ users });
+  } catch (error) {
+    console.error("Error searching users:", error);
+    res.status(400).json({ message: "Error searching users" });
+  }
+};
+
+module.exports = { getUsersLeaderboard, getSearchedUser };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Navbar, Sidebar, Loader } from "../components";
+import { Navbar, Sidebar, Loader, SearchBar } from "../components";
 import { useNavigate } from "react-router-dom";
 import { useLeaderboard } from "../hooks/useLeaderboard";
 import { rankings } from "../constants";
@@ -10,6 +10,7 @@ const Leaderboard = () => {
     useLeaderboard();
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const usersPerPage = 10;
 
   useEffect(() => {
@@ -28,9 +29,14 @@ const Leaderboard = () => {
     fetchData();
   }, [currentPage, usersPerPage]);
 
-  const filteredUsers = users.filter((user) =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    const filtered = searchTerm
+      ? filteredUsers
+      : users.filter((user) =>
+          user.username.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    setFilteredUsers(filtered);
+  }, [users, searchTerm]);
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
@@ -46,6 +52,26 @@ const Leaderboard = () => {
     setCurrentPage(pageNumber);
   };
 
+  const onSearch = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/leaderboard/getSearchedUser",
+        {
+          searchTerm,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setFilteredUsers(response.data.users);
+      setCurrentPage(1);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="h-screen bg-background-100 flex flex-col">
       <Navbar />
@@ -58,29 +84,11 @@ const Leaderboard = () => {
             <div>
               <div className="flex justify-between">
                 <h1 className="text-4xl text-white mb-4">Leaderboard</h1>
-                <div className="mb-6">
-                  <label className="input input-bordered flex items-center gap-2">
-                    <input
-                      type="text"
-                      className="grow w-[400px]"
-                      placeholder="Search"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 16 16"
-                      fill="currentColor"
-                      className="w-4 h-4 opacity-70"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </label>
-                </div>
+                <SearchBar
+                  value={searchTerm}
+                  onChange={setSearchTerm}
+                  onSearch={onSearch}
+                />
               </div>
               <div className="rounded-lg shadow-md border-2 overflow-hidden">
                 <div className="grid grid-cols-[0.5fr_2.5fr_1fr_2fr_0.5fr] text-xl px-8 py-4 gap-4 bg-[#666666] mb-4 text-white font-bold">
@@ -93,7 +101,7 @@ const Leaderboard = () => {
                 {filteredUsers.map((user, index) => (
                   <div
                     key={user._id}
-                    className="grid grid-cols-[0.5fr_2.5fr_1fr_2fr_0.5fr] px-8 gap-4 items-center text-lg text-white mb-2 border-b border-gray-700 pb-2 last:border-b-0 last:pb-0"
+                    className="h-12 grid grid-cols-[0.5fr_2.5fr_1fr_2fr_0.5fr] px-8 gap-4 items-center text-lg text-white mb-2 border-b border-gray-700 pb-2 last:border-b-0 last:pb-0"
                   >
                     <div>{indexOfFirstUser + index + 1}</div>
                     <div>{user.username}</div>
