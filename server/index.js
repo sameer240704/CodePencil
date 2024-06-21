@@ -1,14 +1,20 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/user.route");
 const leaderboardRoutes = require("./routes/leaderboard.route");
 const buddiesRoutes = require("./routes/buddies.route");
+const codeRoomRoutes = require("./routes/codeRoom.route");
 
 const app = express();
-app.use(express.json());
+
+// Middlewares
 app.use(cors());
+app.use(bodyParser.json());
+app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
 app.use((req, res, next) => {
   console.log(req.path, res.method);
@@ -19,6 +25,7 @@ app.use((req, res, next) => {
 app.use("/", userRoutes);
 app.use("/leaderboard", leaderboardRoutes);
 app.use("/buddies", buddiesRoutes);
+app.use("/codeRoom", codeRoomRoutes);
 
 const connectionParams = {
   useNewUrlParser: true,

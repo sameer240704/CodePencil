@@ -2,6 +2,8 @@ const User = require("../models/user.models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
+const path = require("path");
+const upload = require("../middlewares/multer.middleware");
 
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET_KEY, { expiresIn: "3d" });
@@ -76,7 +78,7 @@ const registerUser = async (req, res) => {
 
     const token = createToken(newUser._id);
 
-    newUser.save();
+    await newUser.save();
 
     res.status(200).json(newUser);
   } catch (error) {
@@ -84,4 +86,21 @@ const registerUser = async (req, res) => {
   }
 };
 
-module.exports = { loginUser, registerUser };
+const getUserById = async (req, res) => {
+  try {
+    // console.log(req.params.userId);
+    const user = await User.findById(req.params.userId);
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Couldn't find the user you are looking for " });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).status({ message: "Error: getUserById broke down " });
+  }
+};
+
+module.exports = { loginUser, registerUser, getUserById };

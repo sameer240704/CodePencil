@@ -19,7 +19,10 @@ const Navbar = () => {
   const handleUserLogout = () => {
     logout();
     setUser(null);
-    navigate("/");
+    if(location.pathname === "/") 
+      window.location.reload();
+    else 
+      navigate("/");
   };
 
   const getProfileImage = () => {

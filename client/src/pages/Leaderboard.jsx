@@ -12,6 +12,7 @@ const Leaderboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const usersPerPage = 10;
+  const currentUser = localStorage.getItem("user");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,10 +81,10 @@ const Leaderboard = () => {
         {isLoading ? (
           <Loader />
         ) : (
-          <div className="px-10 py-8 flex-1 flex flex-col justify-between overflow-auto">
-            <div>
+          <div className=" flex-1 overflow-auto">
+            <div className="p-6">
               <div className="flex justify-between">
-                <h1 className="text-4xl text-white mb-4">Leaderboard</h1>
+                <h1 className="text-4xl text-white">Leaderboard</h1>
                 <SearchBar
                   value={searchTerm}
                   onChange={setSearchTerm}
@@ -91,7 +92,7 @@ const Leaderboard = () => {
                 />
               </div>
               <div className="rounded-lg shadow-md border-2 overflow-hidden">
-                <div className="grid grid-cols-[0.5fr_2.5fr_1fr_2fr_0.5fr] text-xl px-8 py-4 gap-4 bg-[#666666] mb-4 text-white font-bold">
+                <div className="grid grid-cols-[0.5fr_2.5fr_1fr_2fr_0.5fr] text-xl px-8 py-4 gap-4 bg-[#666666] text-white font-bold">
                   <div>Rank</div>
                   <div>Coder</div>
                   <div>Points</div>
@@ -101,7 +102,9 @@ const Leaderboard = () => {
                 {filteredUsers.map((user, index) => (
                   <div
                     key={user._id}
-                    className="h-12 grid grid-cols-[0.5fr_2.5fr_1fr_2fr_0.5fr] px-8 gap-4 items-center text-lg text-white mb-2 border-b border-gray-700 pb-2 last:border-b-0 last:pb-0"
+                    className={`h-[60px] grid grid-cols-[0.5fr_2.5fr_1fr_2fr_0.5fr] px-8 gap-4 items-center text-lg text-white border-b border-gray-700 last:border-b-0 hover:bg-gray-800 hover:cursor-pointer ${
+                      currentUser._id === user._id ? "bg-secondary-300" : ""
+                    } `}
                   >
                     <div>{indexOfFirstUser + index + 1}</div>
                     <div>{user.username}</div>
@@ -117,7 +120,7 @@ const Leaderboard = () => {
                 ))}
               </div>
             </div>
-            <div className="mt-4 flex justify-center">
+            <div className="mt-5 flex justify-center">
               <nav aria-label="Pagination">
                 <ul className="flex list-none gap-2">
                   {Array.from({ length: totalPages }, (_, index) => (

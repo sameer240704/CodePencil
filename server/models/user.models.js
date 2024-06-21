@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const codeHistoryEntrySchema = require("./codeRoom.models");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
