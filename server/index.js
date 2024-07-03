@@ -27,12 +27,13 @@ app.use("/leaderboard", leaderboardRoutes);
 app.use("/buddies", buddiesRoutes);
 app.use("/codeRoom", codeRoomRoutes);
 
+// Database
+
 const connectionParams = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
 
-// Database
 const connectDB = async () => {
   try {
     await mongoose

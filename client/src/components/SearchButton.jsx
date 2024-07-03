@@ -3,7 +3,7 @@ import React from "react";
 
 const SearchBar = ({ value, onChange, onSearch }) => {
   return (
-    <div className="mb-6">
+    <div className="">
       <label className="input input-bordered flex items-center gap-2">
         <input
           type="text"

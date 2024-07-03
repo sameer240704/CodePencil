@@ -29,7 +29,15 @@ const userSchema = new Schema(
     points: {
       type: Number,
       default: 0,
-      required: false,
+    },
+    status: {
+      type: String,
+      default: "Online",
+    },
+    friends: {
+      type: [mongoose.Types.ObjectId],
+      ref: "User",
+      default: [],
     },
   },
   { timestamps: true }

@@ -29,6 +29,21 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Password is incorrect" });
     }
 
+    const updateStatus = await User.updateOne(
+      { _id: user._id },
+      {
+        $set: {
+          status: "Online",
+        },
+      }
+    );
+
+    if (!updateStatus) {
+      res
+        .status(400)
+        .json({ message: "Cannot login the user, try again later" });
+    }
+
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
@@ -88,7 +103,6 @@ const registerUser = async (req, res) => {
 
 const getUserById = async (req, res) => {
   try {
-    // console.log(req.params.userId);
     const user = await User.findById(req.params.userId);
 
     if (!user) {
@@ -103,4 +117,52 @@ const getUserById = async (req, res) => {
   }
 };
 
-module.exports = { loginUser, registerUser, getUserById };
+const logoutUser = async (req, res) => {
+  const { _id } = req.body;
+  try {
+    const user = await User.findById(_id);
+
+    if (!user) {
+      res.status(400).json({ message: "User doesn't exists" });
+    }
+
+    const updateStatus = await User.updateOne(
+      { _id: user._id },
+      {
+        $set: {
+          status: "Offline",
+        },
+      }
+    );
+
+    if (!updateStatus) {
+      res
+        .status(400)
+        .json({ message: "Cannot logout the user. Please try again" });
+    }
+
+    res.status(200).json({ message: "User logged out successfully" });
+  } catch (error) {
+    console.log("Error logging out user: ", error.message);
+    res.status(400).json({ message: "Please try logging out again" });
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, "username profileImage");
+
+    return res.status(200).json({ users });
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    return res.status(500).json({ message: "Please try again" });
+  }
+};
+
+module.exports = {
+  loginUser,
+  registerUser,
+  getUserById,
+  logoutUser,
+  getAllUsers,
+};

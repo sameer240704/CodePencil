@@ -17,7 +17,7 @@ const Home = () => {
       <div className="flex-1 flex">
         <Sidebar />
         <div className="p-6 flex-1 overflow-auto">
-          <h1 className="text-3xl text-white">Home</h1>
+          <h1 className="text-4xl text-white">Home</h1>
         </div>
       </div>
     </div>
