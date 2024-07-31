@@ -7,7 +7,7 @@ const Sidebar = () => {
   const pathname = location.pathname;
 
   return (
-    <section className="bg-[#2a2a2a] sticky left-0 top-0 text-white flex flex-col justify-between p-2 pt-8 max-sm:hidden">
+    <section className="h-screen bg-[#2a2a2a] sticky left-0 top-0 text-white flex flex-col justify-between p-2 pt-8 max-sm:hidden">
       <div className="flex flex-1 flex-col gap-6">
         {sidebarLinks.map((item) => {
           const isActive =

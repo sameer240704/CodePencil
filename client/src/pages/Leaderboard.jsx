@@ -93,7 +93,7 @@ const Leaderboard = () => {
   };
 
   return (
-    <div className="flex flex-col overflow-x-hidden">
+    <div className="flex flex-col overflow-x-hidden bg-gradient-to-br from-background-100 to-background-200">
       <Navbar />
       <div className="flex-1 flex">
         <Sidebar />
@@ -104,7 +104,7 @@ const Leaderboard = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="h-screen flex flex-col flex-1 overflow-auto justify-between pb-5 p-8"
+            className="h-screen flex flex-col flex-1 overflow-auto justify-between pb-5 p-8 "
           >
             <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-md rounded-2xl shadow-2xl border border-white border-opacity-20 overflow-hidden">
               <div className="flex justify-between items-center px-8 py-4">
