@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Navbar, Sidebar } from "../components";
+import { LineChart, Navbar, Sidebar } from "../components";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -12,12 +12,12 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="h-screen bg-background-100 flex flex-col">
+    <div className="flex flex-col overflow-x-hidden bg-gradient-to-br from-background-100 to-background-200">
       <Navbar />
       <div className="flex-1 flex">
         <Sidebar />
         <div className="p-6 flex-1 overflow-auto">
-          <h1 className="text-4xl text-white">Home</h1>
+          <LineChart />
         </div>
       </div>
     </div>

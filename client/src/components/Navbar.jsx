@@ -145,7 +145,9 @@ const FriendRequestsDropdown = ({
     </div>
     <div className="max-h-80 overflow-y-auto">
       {receivedRequests.length === 0 ? (
-        <p className="text-gray-400 px-4 py-3 text-center italic">No pending requests</p>
+        <p className="text-gray-400 px-4 py-3 text-center italic">
+          No pending requests
+        </p>
       ) : (
         receivedRequests.map((request) => (
           <FriendRequestItem

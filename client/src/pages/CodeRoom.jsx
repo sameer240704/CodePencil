@@ -12,7 +12,7 @@ const CodeRoom = () => {
   }, []);
 
   return (
-    <div className="h-screen bg-background-100 flex flex-col">
+    <div className="flex flex-col overflow-x-hidden bg-gradient-to-br from-background-100 to-background-200">
       <Navbar />
       <div className="flex-1 flex">
         <Sidebar />
